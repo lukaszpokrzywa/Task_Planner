@@ -26,11 +26,11 @@ class TaskType extends AbstractType
             ->add('category', EntityType::class, array(
                 'class' => 'TaskPlannerBundle:Category',
                 'choice_label' => 'name',
+                /*
                 'query_builder' => function(EntityRepository $repo) use($options) {
-                    $findUser = $repo->createQueryBuilder('category')
-                        ->where('category.user = :user');
-                    return $findUser->setParameter('user', $options['user']);
-                }
+                    return $repo->getCategoriesByUser($options['user']);
+                }*/
+                'choices' => $options['user']->getCategories()
                 ))
             ->add('save', SubmitType::class);
     }

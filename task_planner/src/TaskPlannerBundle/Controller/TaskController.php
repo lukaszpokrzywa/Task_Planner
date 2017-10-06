@@ -49,18 +49,14 @@ class TaskController extends Controller
         $task = new Task();
         $user = $this->getUser();
 
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(TaskType::class, $task, [
+            'user' => $this->getUser()
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $task = $form->getData();
-            var_dump($task);
             $task->setUser($user);
-//            $repo = $this->getDoctrine()->getRepository('TaskPlannerBundle:Category');
-//            $category = $repo->find($request->request->get('category');
-
-  //          $task->setCategory($category);
-
-
+            
             $em = $this->getDoctrine()->getManager();
             $em->persist($task);
             $em->flush();
@@ -88,11 +84,11 @@ class TaskController extends Controller
             $this->denyAccessUnlessGranted('edit', $task);
 
             $form = $this->createForm(TaskType::class, $task, array(
-                'action' => $this->generateUrl('editTask', array('id' => $id))
+                'action' => $this->generateUrl('editTask', array('id' => $id)),
+                'user' => $this->getUser()
             ));
 
             $form->handleRequest($request);
-
 
             return $this->render('TaskPlannerBundle:Task:edit.html.twig', array(
                 'form' => $form->createView(),
@@ -115,12 +111,14 @@ class TaskController extends Controller
         $repo = $this->getDoctrine()->getRepository('TaskPlannerBundle:Task');
         $task = $repo->find($id);
 
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(TaskType::class, $task, [
+            'user' => $this->getUser()
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             $task = $form->getData();
-
+            
             $em = $this->getDoctrine()->getManager();
             $em->persist($task);
             $em->flush();
